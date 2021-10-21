@@ -41,5 +41,17 @@
    )
   )
 
+;Selectores
 
-
+;Funcion selectora del usuario
+;Dominio:lista User
+;Recorrido: string
+(define (user->username user)
+  (car user)
+  )
+;Funcion selectora de contrasenia
+;Dominio:lista user
+;Recorrido: string
+(define (user->password user)
+  (car (cdr user))
+  )
