@@ -1,5 +1,8 @@
 #lang racket
 
+
+
+
 ;Representación
 ;'() <- TDA usuario vacio
 ;'("JuanSanchez" "contrasenia") <- TDA usuario compuesto por su usuario y contrasenia
@@ -16,7 +19,8 @@
 ;Pertenencia
 
 ;La siguiente funcion nos permite determinar si los datos introducidos son correctos
-;Para la generacion de un nuevo usuario, se pedirá como minimo un usuario de 4 caracteres.
+;Para la generacion de un nuevo usuario, se pedirá como minimo un usuario de 4 caracteres y una
+;contrasenia de 8.
 ;Dominio: lista usuario
 ;Recorrido: bool.
 (define (user? user)
@@ -47,7 +51,9 @@
 ;Dominio:lista User
 ;Recorrido: string
 (define (user->username user)
-  (car user)
+  (if (null? user)
+      null
+  (car user))
   )
 ;Funcion selectora de contrasenia
 ;Dominio:lista user
@@ -55,3 +61,22 @@
 (define (user->password user)
   (car (cdr user))
   )
+
+;Modificadores
+;Aniade un nuevo usuario a la lista de users disponibles
+;Dominio: lista de usuarios
+;Recorrido: lista de usuarios nueva, lista de usuarios antigua.
+
+(define (agregaUsuario usuarioAgregar listaUsuarios)
+  ;Se verifica que el usuario sea del tipo usuario
+  (if(user? usuarioAgregar)
+     (append (list listaUsuarios usuarioAgregar))
+     null)
+  )
+
+
+
+
+
+;EXPMLE
+(define test1 (newUser "pedro" "pedro321"))
