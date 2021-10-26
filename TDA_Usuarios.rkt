@@ -1,8 +1,5 @@
 #lang racket
-
-
-
-
+(provide (all-defined-out))
 ;Representación
 ;'() <- TDA usuario vacio
 ;'("JuanSanchez" "contrasenia") <- TDA usuario compuesto por su usuario y contrasenia
@@ -70,13 +67,20 @@
 (define (agregaUsuario usuarioAgregar listaUsuarios)
   ;Se verifica que el usuario sea del tipo usuario
   (if(user? usuarioAgregar)
-     (append (list listaUsuarios usuarioAgregar))
-     null)
+     (if (null? listaUsuarios) ;Y que no sea nulo
+       (list usuarioAgregar)
+       (if (equal? 1 (length listaUsuarios))
+          (append (list (car listaUsuarios)) (list usuarioAgregar))
+          (append (list (car listaUsuarios)) (agregaUsuario usuarioAgregar (cdr listaUsuarios)))
+       )
+      )
+      listaUsuarios)
   )
 
 
 
 
 
-;EXPMLE
+;EXPMLE)
 (define test1 (newUser "pedro" "pedro321"))
+(define listaTest '(("pepe" "qwertyy1234") ("pepe321321" "qwertyy1234")))
