@@ -7,7 +7,7 @@
 ;Constructores
 
 ;Función creadora de user
-;Dominio: string-string
+;Dominio: string string
 ;Recorrido: lista vacía
 
 (define (newUser user password)
