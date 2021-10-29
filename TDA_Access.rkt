@@ -56,10 +56,10 @@
      (if (eq? (estaRegistradoListas? usuarioAccess listaRegistrados #t) #t) ;Que todos los usuarios que requieran accesos esten
                                                                               ;registrados en la plataforma.
            (if (null? listaAccess) ;no sea nulo
-             (list usuarioAccess id)
+             (list id usuarioAccess )
            (if (equal? 1 (length listaAccess))
-                 (append (list (car listaAccess)) (list usuarioAccess) (list id))
-                 (append (list (car listaAccess)) (daAcceso usuarioAccess (cdr listaAccess) (list id)) (list id))
+                 (append (car listaAccess) (list id) (list usuarioAccess) )
+                 (append  (car listaAccess) (list id) (daAcceso usuarioAccess (cdr listaAccess) (list id)) )
                  )
      
          )
