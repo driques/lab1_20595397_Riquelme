@@ -21,6 +21,48 @@
              #t
              #f)
   )
+
+
+
+;PermisoEditar? sirve para verificar que un usuario tenga permisos write de un documento en especifico.
+;Dominio: stringXintXlistaString
+;Recorrido: Booleano
+(define (permisoEditar? userLog idDoc accesos)
+  
+(if(null? accesos)
+           #f
+           (if (eq? idDoc  (car accesos))
+               (if (recorreEditores (car(cdr accesos)) userLog)
+                   #t
+                   #f)
+               (permisoEditar? userLog idDoc (cdr accesos))
+            )
+         )
+
+
+
+   
+
+  )
+;Funcion que recorre los editores y pregunta si es que el nombre del user está dentro de estos y si tiene permisos write.
+;Dominio: listaString X string
+;Recorrido: Booleano
+
+(define (recorreEditores listaEditores nombreEditor)
+
+  (if (null? listaEditores)
+             #f
+             (if (and (eq? (car(car listaEditores)) nombreEditor) (char=? (car(cdr (car listaEditores))) #\w))
+                 #t
+                 (recorreEditores (cdr listaEditores) nombreEditor)
+                 )
+             )
+  )
+
+
+
+
+
 ;Selectores
 ;Función que nos permite obtener el usuario de access
 ;Dominio: access

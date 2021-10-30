@@ -14,6 +14,23 @@
      null
      )
   )
+;Pertenencia
+;Ímplementación función adicional para verificar que el documento seleccionado a compartir sea de la
+;autoria del usuario logeado.
+;Dominio: string X int X listaString
+;Recorrido: Booleano
+(define(autoriaDoc? userLog idDoc docs)
+        (if(null? docs)
+           #f
+           (if (eq? idDoc (car (car docs)))
+               (if (eq? userLog (car (cdr (car docs))))
+                   #t
+                   #f)
+               (autoriaDoc? userLog idDoc (cdr docs))
+            )
+         )
+     )
+
 ;Selector
 
 (define (docs->selectAutor doc)
