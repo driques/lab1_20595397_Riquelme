@@ -7,7 +7,7 @@
 (define encryptFn (lambda (s) (list->string (reverse (string->list s)))))
 
 ;Representación paradigmaDocs
-;( (name) (date) (encryptFn) (decryptFn) '(listaRegistrados) '(usuarioActivo) '(listaDocumentos) '(listaAccess)) 
+;( (name) (date) (encryptFn) (decryptFn) '(listaRegistrados) '(usuarioActivo) '(listaDocumentos) '(listaAccess) '(historial)) 
 
 ;Constructor paradigmaDocs, crea la base de todo.
 ;Dominio: string X string X fecha X encrypt X decrypt
@@ -15,7 +15,7 @@
 (define (paradigmaDocs name date encryptFn decryptFn)
   (if (string? name)
       (if (fecha? date)
-          (list name date encryptFn decryptFn '() '() '() '())
+          (list name date encryptFn decryptFn '() '() '() '() '())
           null)
       null)
   )
@@ -84,6 +84,12 @@
 (define (pDocs->access pDocs)
   (list-ref pDocs 7)
  )
+;Función selectora del historial.
+;Dominio:lista paradigmaDocs
+;Recorrido: lista strings.
+(define (pDocs->history pDocs)
+  (list-ref pDocs 8)
+ )
 
 
 
@@ -92,8 +98,8 @@
 ;La siguiente función actualiza paradigmadocs cada vez que se ejerce un cambio sobre él.
 ;Dominio: string X string X fecha X encrypt X decrypt X string X string X string X string
 ;Recorrido: lista paradigmadocs
-(define (actualizarDocs name date encryptFn decryptFn listaUsuarios usuariosActivos listaDocs access)
-  (list name date encryptFn decryptFn listaUsuarios usuariosActivos listaDocs access)
+(define (actualizarDocs name date encryptFn decryptFn listaUsuarios usuariosActivos listaDocs access historial)
+  (list name date encryptFn decryptFn listaUsuarios usuariosActivos listaDocs access historial)
  )
 
 
