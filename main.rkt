@@ -6,6 +6,11 @@
 (require "TDA_Access.rkt")
 (require "TDA_historial.rkt")
 
+
+;IMPORTANTE
+;AÚN FALTA CREAR BIEN LA PARTE DEL HISTORIAL, PASANDO TODOS LOS DATOS DE MANERA CORRECTA
+;SEGUIR EL EJEMPLO DEJADO EN EL TDA HISTORIAL.
+
 ;Implementación de función register. Crea una nueva cuenta dentro de paradigmaDocs.
 ;Utiliza recursion natural en agregaUsuario, si hay un dato invalido, retorna paradigmadocs sin cambios. 
 ;Dominio: paradigmadocs X date X string X string
@@ -75,7 +80,9 @@
                                   (logOut)
                                   (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)
                                   (pDocs->access pDocs)
-                                  (historial (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre) (pDocs->history pDocs) )
+                                  (historial (docs->idDoc (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre))
+                                             (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)
+                                             (pDocs->history pDocs))
                                   )
                   
                   pDocs)
@@ -134,7 +141,7 @@
                             (logOut)
                             (actualizaDoc id content (pDocs->docs pDocs))
                             (pDocs->access pDocs)
-                            (historial (pDocs->docs pDocs) (pDocs->history pDocs))
+                            (pDocs->history pDocs)
                             )
                  pDocs
                  )

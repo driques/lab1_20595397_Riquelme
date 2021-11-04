@@ -32,7 +32,9 @@
      )
 
 ;Selector
-
+(define (docs->idDoc doc)
+  (list-ref doc 0)
+  )
 (define (docs->selectAutor doc)
    (list-ref doc 1)
   )
