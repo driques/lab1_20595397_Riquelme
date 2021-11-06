@@ -81,14 +81,6 @@
 
 
 
-;No sé si debo borrar el siguiente código
-
-;(define (accessos access.accesses count)
-;         (if (null? access.accesses)
-;             count
-;             (accessos (cdr access.accesses) (+ count 1))
-;             )
-;  )
 
 ;Modificador, da acceso a los documentos dependiendo de si están registrados o no, y si todos sus
 ;datos son validos.

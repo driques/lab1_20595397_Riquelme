@@ -42,6 +42,31 @@
       )
   )
 
+
+
+(define (autoriaHistorialDoc? idDoc activeUser historial)
+          (if (null? historial)
+              #f
+              (if (and (eq? idDoc (historial->idDoc historial)) (eq? activeUser (historial->owner historial)))
+                  #t
+                  (autoriaHistorialDoc? idDoc activeUser (cdr historial))
+               )
+      )
+  )
+
+
+(define (existenId? idDoc idVer historial)
+    (if (null? historial)
+        #f
+        (if (and (eq? (historial->idDoc historial) idDoc) (eq? (historial->idVer historial) idVer))
+            #t
+            (existenId? idVer idDoc (cdr historial))
+            )
+        )
+     )
+
+
+
 ;Selector
 (define (historial->idDoc historial)
   (car(car historial))
@@ -49,6 +74,24 @@
 (define (historial->idVer historial)
   (car(cdr(car historial)))
   )
+(define (historial->docSelect historial)
+  (cddr(car historial))
+  )
+(define (historial->owner historial)
+      (cadr(car (historial->docSelect historial)))
+  )
+;Modificador
+
+(define (restore idDoc idVer historial)
+         (if (null? historial)
+             "error"
+             (if (and (eq? (historial->idDoc historial) idDoc) (eq? (historial->idVer historial) idVer))
+                 (car (historial->docSelect historial))
+                 (restore idDoc idVer (cdr historial))
+              )
+          )   
+     )
+
 
 
 ;Funciones adicionales

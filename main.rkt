@@ -7,9 +7,6 @@
 (require "TDA_historial.rkt")
 
 
-;IMPORTANTE
-;AÚN FALTA CREAR BIEN LA PARTE DEL HISTORIAL, PASANDO TODOS LOS DATOS DE MANERA CORRECTA
-;SEGUIR EL EJEMPLO DEJADO EN EL TDA HISTORIAL.
 
 ;Implementación de función register. Crea una nueva cuenta dentro de paradigmaDocs.
 ;Utiliza recursion natural en agregaUsuario, si hay un dato invalido, retorna paradigmadocs sin cambios. 
@@ -64,6 +61,8 @@
   )
 ;Implementación de función create, cumple con el prerequisito de login.
 ;NO OLVIDAR ME FALTA ENCRIPTAR CONTENIDO
+
+
 ;Dominio: paradigmadocs X date X String (nombreDoc) X String  (contenido)
 ;Recorrido: Paradigmadocs
 ;Cabe destacar el uso de currificación para hacer posible la función, en caso de no cumplir
@@ -127,6 +126,7 @@
 ;Implementación de add, no arroja resultados si no se aplica login
 ;Solo propietarios o usuarios con permiso write pueden agregar
 ;FALTA AÑADIR LA ENCRIPTACIÓN
+
 ;Dominio: paradigmadocs X int X date X String
 ;Recorrido: paradigmadocs 
 (define (add pDocs)
@@ -157,6 +157,39 @@
 
 
 
+;RestoreVersion
+;Dominio: paradigmadocs X int X int
+;Recorrido: paradigmadocs 
+
+(define (restoreVersion pDocs)
+         (lambda (idDoc idVersion)
+           (if (not (null? (pDocs->activeUser pDocs)))
+              (if (autoriaHistorialDoc? idDoc (car(car(pDocs->activeUser pDocs))) (pDocs->history pDocs))
+                 (if (existenId? idDoc idVersion (pDocs->history pDocs))
+                     (actualizarDocs
+                            (pDocs->name pDocs)
+                            (pDocs->date pDocs)
+                            (pDocs->encryptFn pDocs)
+                            (pDocs->decryptFn pDocs)
+                            (pDocs->usersList pDocs)
+                            (logOut)
+                            (reemplaza (pDocs->docs pDocs) idDoc (restore idDoc idVersion (pDocs->history pDocs)));Aqui actualizar
+                            (pDocs->access pDocs)
+                            (pDocs->history pDocs)
+                            )
+                     pDocs)
+                 pDocs
+                 )
+
+              pDocs
+            )
+           )
+  )
+
+
+
+
+
 ;Los siguientes son funciones "test" para probar las anteriores funciones, probar uno a uno para entender la traza.
 
 (define pDocs (paradigmaDocs "pDocs" (fecha 20 11 2020) encryptFn encryptFn)) ;Se crea el editor de texto.
@@ -180,4 +213,8 @@
 (define pDocsAdd ((login pDocsShare3  "driques"  "contrasenia321" add) 2 (fecha 1 11 2020) " este es un comentario")) ;driques tiene permisos write en el doc 2, por lo que puede editar
 (define pDocsAdd2 ((login pDocsAdd  "pepe3"  "qwertyy1234" add) 1 (fecha 1 11 2020) " este es un comentario en el documento 1")) ;pepe3 tiene permisos write en el doc 1, por lo que puede editar
 (define pDocsAdd3 ((login pDocsAdd2  "driques"  "contrasenia321" add) 3 (fecha 1 11 2020) " Aqui no hay comentario, doc no existe.")) ;No existe el doc 3.
+
+(define pDocsRestore ((login pDocsAdd2 "driques" "contrasenia321" restoreVersion) 1 1))
+(define pDocsRestore2 ((login pDocsAdd2 "pepe3" "qwertyy1234" restoreVersion) 1 1))
+(define pDocsRestore3 ((login pDocsRestore "driques" "contrasenia321" restoreVersion) 1 2))
 ;Nota, ya se guardan dentro del historial las versiones distintas de un mismo documento, falta crear la función que devuelva al documento principal el que se quiere volver.
