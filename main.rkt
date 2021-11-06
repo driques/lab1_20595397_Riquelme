@@ -80,10 +80,11 @@
                                   (logOut)
                                   (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)
                                   (pDocs->access pDocs)
-                                  (historial (docs->idDoc (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre))
+                                  (historial (docs->idDoc (list-ref (reverse(nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)) 0));Por la naturaleza de nuevoDoc, se invierte.
                                              (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)
                                              (pDocs->history pDocs))
                                   )
+                   
                   
                   pDocs)
                pDocs
@@ -141,7 +142,9 @@
                             (logOut)
                             (actualizaDoc id content (pDocs->docs pDocs))
                             (pDocs->access pDocs)
-                            (pDocs->history pDocs)
+                            (historial id
+                                       (actualizaDoc id content (pDocs->docs pDocs))
+                                       (pDocs->history pDocs))
                             )
                  pDocs
                  )
@@ -165,16 +168,16 @@
 (define pDocsLogin1 ((login pDocsRegister3  "driques"  "contrasenia321" create) (fecha 30 10 2020) "doc1" "primer documento"));Se inicia sesión y se crea un doc. 
 (define pDocsLogin2 ((login pDocsLogin1  "pepe"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;Se inicia sesión y se crea un doc.
 (define pDocsLogin3 ((login pDocsLogin1  "usuarioError"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;No existe el usuario
-(define pDocsLogin4 ((login pDocsLogin2  "pepe3"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;Se inicia sesión y se crea un doc.
+(define pDocsLogin4 ((login pDocsLogin2  "pepe3"  "qwertyy1234" create) (fecha 30 10 2020) "doc3" "tercer documento")) ;Se inicia sesión y se crea un doc.
 
 
-;(define pDocsShare ((login pDocsLogin2  "pepe"  "qwertyy1234" share) 2 (newAccess "driques" #\w) (newAccess "pepe3" #\r))) ;Se dan accesos nuevos
-;(define pDocsShare2 ((login pDocsShare  "juana"  "qwertyy1234" share) 2 (newAccess "driques" #\w) ));Juana no existe en los usuarios registrados, retorna pDocs sin cambios
-;(define pDocsShare3 ((login pDocsShare  "driques"  "contrasenia321" share) 1 (newAccess "pepe3" #\c) )) ;Comparte otro usuario otro doc
-;(define pDocsShare4 ((login pDocsShare  "driques"  "contrasenia321" share) 2 (newAccess "pepe3" #\c) )) ;No permite compartir documentos que no sean de la autoria del usuario.
+(define pDocsShare ((login pDocsLogin2  "pepe"  "qwertyy1234" share) 2 (newAccess "driques" #\w) (newAccess "pepe3" #\r))) ;Se dan accesos nuevos
+(define pDocsShare2 ((login pDocsShare  "juana"  "qwertyy1234" share) 2 (newAccess "driques" #\w) ));Juana no existe en los usuarios registrados, retorna pDocs sin cambios
+(define pDocsShare3 ((login pDocsShare  "driques"  "contrasenia321" share) 1 (newAccess "pepe3" #\w) )) ;Comparte otro usuario otro doc
+(define pDocsShare4 ((login pDocsShare  "driques"  "contrasenia321" share) 2 (newAccess "pepe3" #\c) )) ;No permite compartir documentos que no sean de la autoria del usuario.
 
 
-;(define pDocsAdd ((login pDocsShare  "driques"  "contrasenia321" add) 2 (fecha 1 11 2020) " este es un comentario")) ;driques tiene permisos write en el doc 2, por lo que puede editar
-;(define pDocsAdd2 ((login pDocsAdd  "pepe3"  "qwertyy1234" add) 1 (fecha 1 11 2020) " este es un comentario en el documento 1")) ;pepe3 tiene permisos write en el doc 1, por lo que puede editar
-;(define pDocsAdd3 ((login pDocsAdd2  "driques"  "contrasenia321" add) 3 (fecha 1 11 2020) " Aqui no hay comentario, doc no existe.")) ;No existe el doc 3.
-
+(define pDocsAdd ((login pDocsShare3  "driques"  "contrasenia321" add) 2 (fecha 1 11 2020) " este es un comentario")) ;driques tiene permisos write en el doc 2, por lo que puede editar
+(define pDocsAdd2 ((login pDocsAdd  "pepe3"  "qwertyy1234" add) 1 (fecha 1 11 2020) " este es un comentario en el documento 1")) ;pepe3 tiene permisos write en el doc 1, por lo que puede editar
+(define pDocsAdd3 ((login pDocsAdd2  "driques"  "contrasenia321" add) 3 (fecha 1 11 2020) " Aqui no hay comentario, doc no existe.")) ;No existe el doc 3.
+;Nota, ya se guardan dentro del historial las versiones distintas de un mismo documento, falta crear la función que devuelva al documento principal el que se quiere volver.

@@ -10,7 +10,7 @@
 ;Recorrido : nuevoDoc
 (define (nuevoDoc contenido autor date documentos nombreDoc)
    (if(string? contenido)
-     (append documentos (list (list (newId documentos) autor date contenido nombreDoc)))
+     (append documentos (list (list (newId documentos) autor date contenido nombreDoc)) )
      null
      )
   )

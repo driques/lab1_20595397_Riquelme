@@ -14,13 +14,20 @@
 ;Ejemplo '((list idDoc (selectIdVer idDoc historialList) documento) (2 1 '(2 "driques" (30 10 2020) "otroTest" "doc2")) (1 1 '(1 "driques" (30 10 2020) "test 1" "doc1")))
 
 
-(define (historial idDoc documento historialList)
-  (if (isInHist? idDoc historialList) ;Se pregunta si el documento estaba anteriormente editado.
-      (append (list (list idDoc (selectIdVer idDoc historialList) documento)) historialList); Si el doc fue editado, se crea un append con lo anterior
-      (append (list (list idDoc 1 documento)) historialList) ;Sino, se crea uno nuevo con idVer 1.
+(define (historial id documento historialList)
+      (if (null? historialList)
+      (list (list (docs->idDoc (docs->selectDoc id documento)) 1 (docs->selectDoc id documento)))
+      (if (isInHist? (docs->idDoc (docs->selectDoc id documento)) historialList) ;Se pregunta si el documento estaba anteriormente editado.
+          (append (list (list (docs->idDoc (docs->selectDoc id documento)) (selectIdVer (docs->idDoc (docs->selectDoc id documento)) historialList) (docs->selectDoc id documento))) historialList); Si el doc fue editado, se crea un append con lo anterior
+          (append (list (list (docs->idDoc (docs->selectDoc id documento)) 1 (docs->selectDoc id documento))) historialList) ;Sino, se crea uno nuevo con idVer 1.
+
+          )
       )
- 
+
   )
+
+
+
 
 
 ;Pertenencia
@@ -61,8 +68,9 @@
 (define testDoc1 '(1 "driques" (30 10 2020) "test 2 del doc1" "doc1"))
 (define testDoc2 '(1 "driques" (30 10 2020) "test 3 del doc1" "doc1"))
 (define testHist1 (list '(2 1 '(2 "driques" (30 10 2020) "otroTest" "doc2")) '(1 1 '(1 "driques" (30 10 2020) "test 1" "doc1"))) )
+(define testHist2 '())
 
-(define test1 (historial (docs->idDoc testDoc1) testDoc1 testHist1))
-(define test2 (historial (docs->idDoc testDoc2) testDoc2 test1))
+;(define test1 (historial testDoc1 testHist2))
+;(define test2 (historial testDoc2 test1))
 
 
