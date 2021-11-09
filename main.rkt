@@ -187,6 +187,15 @@
   )
 
 
+;RevokeAllAccesses
+
+(define (revokeAllAccesses pDocs)
+           (if (not (null? (pDocs->activeUser pDocs)))
+            null
+            pDocs
+            )
+  )
+
 
 
 
