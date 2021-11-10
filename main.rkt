@@ -187,16 +187,30 @@
   )
 
 
-;RevokeAllAccesses
+;RevokeAllAccesses, no retorna resultado si el user activo no tiene documentos, o no hay users activos.
+;Solo hace cambios en los documentos del propietario del doc.
+;Utiliza funciones al estilo declarativo, con map y filter (revisar TDA_Access).
+;Dom: paradigmaDocs
+;Rec: document list
 
 (define (revokeAllAccesses pDocs)
            (if (not (null? (pDocs->activeUser pDocs)))
-            null
+               (actualizarDocs
+                            (pDocs->name pDocs)
+                            (pDocs->date pDocs)
+                            (pDocs->encryptFn pDocs)
+                            (pDocs->decryptFn pDocs)
+                            (pDocs->usersList pDocs)
+                            (logOut)
+                            (pDocs->docs pDocs)
+                            (revokeAllAccessesNoEncp (car (pDocs->access pDocs)) (filtraId (pDocs->docs pDocs) (car(car(pDocs->activeUser pDocs)))))
+                            (pDocs->history pDocs)
+                            )
             pDocs
             )
   )
 
-
+;(login pDocsShare3 "driques" "contrasenia321" revokeAllAccesses)
 
 
 ;Los siguientes son funciones "test" para probar las anteriores funciones, probar uno a uno para entender la traza.
@@ -226,4 +240,9 @@
 (define pDocsRestore ((login pDocsAdd2 "driques" "contrasenia321" restoreVersion) 1 1))
 (define pDocsRestore2 ((login pDocsAdd2 "pepe3" "qwertyy1234" restoreVersion) 1 1))
 (define pDocsRestore3 ((login pDocsRestore "driques" "contrasenia321" restoreVersion) 1 2))
+
+(define pDocsRevoke (login pDocsShare3 "driques" "contrasenia321" revokeAllAccesses));Introducción correcta, procede a eliminar los permisos del documento de "driques"
+(define pDocsRevoke2 (login pDocsShare3 "pepe" "contrasenia321" revokeAllAccesses));Usuario invalido, solo devuelve paradigmaDocs.
+(define pDocsRevoke3 (login pDocsShare3 "pepe" "qwertyy1234" revokeAllAccesses));Introducción correcta, elimina los permisos de los documentos de "pepe"
+
 ;Nota, ya se guardan dentro del historial las versiones distintas de un mismo documento, falta crear la función que devuelva al documento principal el que se quiere volver.

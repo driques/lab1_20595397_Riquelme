@@ -138,6 +138,57 @@
   )
 
 
+;-----------------------------------------------------------------------------
+;nameEq? es una función de pertenencia que pregunta si un user coincide con la listaDocs.
+(define (nameEq? user)
+            (lambda (listaDocs)
+              (if (eq? (cadr listaDocs) user)
+                  #t
+                  #f)
+              )
+  )
+
+;FilraId nos permite filtrar todos los ids pertenecientes a un user.
+(define (filtraId listaDocs user)
+       (map car (filter (nameEq? user) listaDocs))
+       
+  )
+;------------------------------------------------------------------------------
+;UsuarioRemover nos permite remover un usuario de la lista de accesos dependiendo
+;del id asignado
+(define (usuariosRemover id listaAccess)
+         (if (null? listaAccess)
+             '()
+               (if (eq? (car listaAccess) id)
+                   (cadr listaAccess)
+                   (usuariosRemover id (cddr listaAccess))
+                   )
+             )
+         )
+
+;FiltraIdDado nos permite remover los id.
+(define (filtraIdDado id listaAccess)
+           (remove (usuariosRemover id listaAccess) listaAccess)
+         
+          
+  )
+;eliminaId nos permite eliminar completamente tanto el nombre como el id de la lista
+;de accesos.
+(define (eliminaId id listaAccess)
+   (remq id (filtraIdDado id  listaAccess) )
+  ) 
+;------------------------------------------------------------------------------
+;revokeAllAccessesNoEncp es la función no encapsulada de revokeAllAccesses, nos permite
+;recursivamente eliminar uno a uno los usuarios de un doc especifico.
+(define (revokeAllAccessesNoEncp listaAccess listaId)
+     (if (null? listaId)
+         listaAccess
+         (revokeAllAccessesNoEncp (eliminaId (car listaId) listaAccess) (cdr listaId))
+      )
+  )
+
+
+
 ;Tests
 ;(define testAccess (list (newAccess "pepe1" #\r) (newAccess "pepe2" #\w) (newAccess "pepe3" #\c) (newAccess "pepe4" #\r) (newAccess "pepe5" #\r)))
 ;(define listaRe(list "driques" "pepe" "pepwe321321" "pepe321321"))
