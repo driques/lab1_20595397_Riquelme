@@ -164,7 +164,7 @@
 (define (restoreVersion pDocs)
          (lambda (idDoc idVersion)
            (if (not (null? (pDocs->activeUser pDocs)))
-              (if (autoriaHistorialDoc? idDoc (car(car(pDocs->activeUser pDocs))) (pDocs->history pDocs))
+              (if (autoriaHistorialDoc? idDoc (pDocs->onlyOnlineUser pDocs) (pDocs->history pDocs))
                  (if (existenId? idDoc idVersion (pDocs->history pDocs))
                      (actualizarDocs
                             (pDocs->name pDocs)
@@ -191,7 +191,7 @@
 ;Solo hace cambios en los documentos del propietario del doc.
 ;Utiliza funciones al estilo declarativo, con map y filter (revisar TDA_Access).
 ;Dom: paradigmaDocs
-;Rec: document list
+;Rec: paradigmaDocs
 
 (define (revokeAllAccesses pDocs)
            (if (not (null? (pDocs->activeUser pDocs)))
@@ -203,14 +203,48 @@
                             (pDocs->usersList pDocs)
                             (logOut)
                             (pDocs->docs pDocs)
-                            (revokeAllAccessesNoEncp (car (pDocs->access pDocs)) (filtraId (pDocs->docs pDocs) (car(car(pDocs->activeUser pDocs)))))
+                            (revokeAllAccessesNoEncp (car (pDocs->access pDocs)) (filtraId (pDocs->docs pDocs) (pDocs->onlyOnlineUser pDocs)))
                             (pDocs->history pDocs)
                             )
             pDocs
             )
   )
 
-;(login pDocsShare3 "driques" "contrasenia321" revokeAllAccesses)
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;Función auxiliar para search, permite saber si se contiene una palabra dentro de un doc, y si el user es, propietario, lector
+;o escritor.
+(define (contPalabra? palabra user accesos)
+  (lambda (docs)
+    (if (or (autoriaDoc? user (docs->idDoc docs) (list docs)) (permisoSearch? user (docs->idDoc docs) accesos))
+        (string-contains? (cadddr docs) palabra)
+        #f)
+        
+    )
+ )
+
+;Implementación de función search, retorna una lista nula en caso de no cumplir ser propietario, lector o escritor.
+;Dom: paradigmaDocs
+;Rec: document list
+(define (search pDocs)
+           (lambda (palabra)
+            (filter (contPalabra? palabra (pDocs->onlyOnlineUser pDocs) (car(pDocs->access pDocs))) (listaDocTotal (pDocs->history pDocsAdd) '()))
+        )
+  )
+
+
+;Se implementa listaDocTotal con el fin de recaudar todos los documentos, tanto en versiones activas como antiguas.
+;Dom: lista X lista
+;Rec: lista
+(define (listaDocTotal historial listasAcum)
+     (if (null? historial)
+         listasAcum
+         (listaDocTotal (cdr historial) (append listasAcum (cddr(car historial))))
+         )
+  )
+;-----------------------------------------------------------------------------------------------------------------------------
+
 
 
 ;Los siguientes son funciones "test" para probar las anteriores funciones, probar uno a uno para entender la traza.
@@ -229,7 +263,7 @@
 
 (define pDocsShare ((login pDocsLogin2  "pepe"  "qwertyy1234" share) 2 (newAccess "driques" #\w) (newAccess "pepe3" #\r))) ;Se dan accesos nuevos
 (define pDocsShare2 ((login pDocsShare  "juana"  "qwertyy1234" share) 2 (newAccess "driques" #\w) ));Juana no existe en los usuarios registrados, retorna pDocs sin cambios
-(define pDocsShare3 ((login pDocsShare  "driques"  "contrasenia321" share) 1 (newAccess "pepe3" #\w) )) ;Comparte otro usuario otro doc
+(define pDocsShare3 ((login pDocsShare  "driques"  "contrasenia321" share) 1 (newAccess "pepe" #\c) )) ;Comparte otro usuario otro doc
 (define pDocsShare4 ((login pDocsShare  "driques"  "contrasenia321" share) 2 (newAccess "pepe3" #\c) )) ;No permite compartir documentos que no sean de la autoria del usuario.
 
 
@@ -245,4 +279,8 @@
 (define pDocsRevoke2 (login pDocsShare3 "pepe" "contrasenia321" revokeAllAccesses));Usuario invalido, solo devuelve paradigmaDocs.
 (define pDocsRevoke3 (login pDocsShare3 "pepe" "qwertyy1234" revokeAllAccesses));Introducción correcta, elimina los permisos de los documentos de "pepe"
 
-;Nota, ya se guardan dentro del historial las versiones distintas de un mismo documento, falta crear la función que devuelva al documento principal el que se quiere volver.
+
+(define pDocsSearch ((login pDocsShare3 "pepe" "qwertyy1234" search)"documento"));"pepe" solo tiene permiso para ver su propio doc, ya que el permiso que tiene es de comentario, no de escritor o lector.
+(define pDocsSearch2 ((login pDocsShare3 "driques" "contrasenia321" search)"documento"));"driques" tiene permiso de escritor en el documento 2, y es propietario del documento 1, por lo que puede ver ambos.
+(define pDocsSearch3 ((login pDocsShare3 "driques" "contrasenia321" search)"noExistePalabra"));Busca una palabra que no existe, entonces, retorna una lista nula.
+

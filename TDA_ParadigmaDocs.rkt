@@ -71,7 +71,9 @@
 (define (pDocs->activeUser pDocs)
     (list-ref pDocs 5)
 )
-
+(define (pDocs->onlyOnlineUser pDocs)
+  (car(car(pDocs->activeUser pDocs)))
+  )
 ;Función selectora de los documentos creados.
 ;Dominio:lista paradigmaDocs
 ;Recorrido: lista strings.
