@@ -26,6 +26,7 @@
                            (pDocs->docs pDocs)
                            (pDocs->access pDocs)
                            (pDocs->history pDocs)
+                           (agregaUsuarioHist (newHistUser username date) (pDocs->usersHistory pDocs))
                           )
             pDocs
            )
@@ -52,6 +53,7 @@
                            (pDocs->docs pDocs)
                            (pDocs->access pDocs)
                            (pDocs->history pDocs)
+                           (pDocs->usersHistory pDocs)
                            )
                        )
               (function pDocs)
@@ -82,6 +84,7 @@
                                   (historial (docs->idDoc (list-ref (reverse(nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)) 0));Por la naturaleza de nuevoDoc, se invierte.
                                              (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)
                                              (pDocs->history pDocs))
+                                  (pDocs->usersHistory pDocs)
                                   )
                    
                   
@@ -111,6 +114,7 @@
                             (pDocs->docs pDocs)
                             (list (daAcceso (append (list access) accesses) (pDocs->access pDocs) id (pDocs->usersList pDocs)))
                             (pDocs->history pDocs)
+                            (pDocs->usersHistory pDocs)
                             )
              
                 pDocs
@@ -145,6 +149,7 @@
                             (historial id
                                        (actualizaDoc id content (pDocs->docs pDocs))
                                        (pDocs->history pDocs))
+                            (pDocs->usersHistory pDocs)
                             )
                  pDocs
                  )
@@ -176,6 +181,7 @@
                             (reemplaza (pDocs->docs pDocs) idDoc (restore idDoc idVersion (pDocs->history pDocs)));Aqui actualizar
                             (pDocs->access pDocs)
                             (pDocs->history pDocs)
+                            (pDocs->usersHistory pDocs)
                             )
                      pDocs)
                  pDocs
@@ -205,6 +211,7 @@
                             (pDocs->docs pDocs)
                             (revokeAllAccessesNoEncp (car (pDocs->access pDocs)) (filtraId (pDocs->docs pDocs) (pDocs->onlyOnlineUser pDocs)))
                             (pDocs->history pDocs)
+                            (pDocs->usersHistory pDocs)
                             )
             pDocs
             )
@@ -250,11 +257,16 @@
 ;Los siguientes son funciones "test" para probar las anteriores funciones, probar uno a uno para entender la traza.
 
 (define pDocs (paradigmaDocs "pDocs" (fecha 20 11 2020) encryptFn encryptFn)) ;Se crea el editor de texto.
-(define pDocsRegister1 (register pDocs (fecha 20 11 2021) "pepe" "qwertyy1234")) ;Se regitra usuario
+(define pDocsRegister1 (register pDocs (fecha 12 11 2021) "pepe" "qwertyy1234")) ;Se regitra usuario
 (define pDocsRegister2 (register pDocsRegister1 (fecha 10 11 2020) "pepe3" "qwertyy1234")) ;Se regitra usuario
-(define pDocsRegister3 (register pDocsRegister2 (fecha 12 01 2023) "driques" "contrasenia321")) ;Se regitra usuario
+(define pDocsRegister3 (register pDocsRegister2 (fecha 12 11 2020) "driques" "contrasenia321")) ;Se registra usuario
+(define pDocsRegister4 (register pDocsRegister3 (fecha 12 11 2020) "driqusses" "contrasenia321")) ;Se regitra usuario
+(define pDocsRegister5 (register pDocsRegister4 (fecha 12 11 2020) "driqasdues" "contrasenia321")) ;Se regitra usuario
 (define pDocsError (register pDocsRegister3 (fecha 20 11 2020) "driques" "qwertyy1234"));Hace falta que solo el username sea identico para
                                                                                         ;no poder tomarlo
+
+
+
 (define pDocsLogin1 ((login pDocsRegister3  "driques"  "contrasenia321" create) (fecha 30 10 2020) "doc1" "primer documento"));Se inicia sesión y se crea un doc. 
 (define pDocsLogin2 ((login pDocsLogin1  "pepe"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;Se inicia sesión y se crea un doc.
 (define pDocsLogin3 ((login pDocsLogin1  "usuarioError"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;No existe el usuario

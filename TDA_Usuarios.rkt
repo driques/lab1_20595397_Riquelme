@@ -1,5 +1,6 @@
 #lang racket
 (provide (all-defined-out))
+(require "TDA_Fecha.rkt")
 ;Representación
 ;'() <- TDA usuario vacio
 ;'("JuanSanchez" "contrasenia") <- TDA usuario compuesto por su usuario y contrasenia
@@ -12,6 +13,10 @@
 
 (define (newUser user password)
   (list user password)
+  )
+
+(define (newHistUser user date)
+  (list user date)
   )
 ;Pertenencia
 
@@ -42,6 +47,19 @@
    )
   )
 
+;La siguiente funcion nos permite determinar si los datos introducidos son correctos
+;Para la generacion del historial del registro de users.
+;Dominio: lista usuario hist.
+;Recorrido: bool.
+
+(define (userHist? userHist)
+  (if (null? userHist)
+      #f
+      (if (fecha? (user->date userHist))
+          #t
+          #f)
+      )
+)
 ;Selectores
 
 ;Funcion selectora del usuario
@@ -58,7 +76,9 @@
 (define (user->password user)
   (car (cdr user))
   )
-
+(define (user->date user)
+  (car (cdr user))
+  )
 ;Modificadores
 ;Aniade un nuevo usuario a la lista de users disponibles
 ;Dominio: lista de usuarios
@@ -76,11 +96,21 @@
       )
       listaUsuarios)
   )
+;Aniade un nuevo usuario a la lista de historial de usuarios registrados.
+;Dominio: lista de usuarios
+;Recorrido: lista de usuarios nueva, lista de usuarios antigua.
+
+(define (agregaUsuarioHist usuarioAgregar listaUsuarios)
+  ;Se verifica que el usuario sea del tipo usuario
+  (if(userHist? usuarioAgregar)
+     (if (null? listaUsuarios) ;Y que no sea nulo
+       (list usuarioAgregar)
+       (if (equal? 1 (length listaUsuarios))
+          (append (list (car listaUsuarios)) (list usuarioAgregar))
+          (append (list (car listaUsuarios)) (agregaUsuario usuarioAgregar (cdr listaUsuarios)))
+       )
+      )
+      listaUsuarios)
+  )
 
 
-
-
-
-;EXPMLE)
-(define test1 (newUser "pedro" "pedro321"))
-(define listaTest '(("pepe" "qwertyy1234") ("pepe321321" "qwertyy1234")))
