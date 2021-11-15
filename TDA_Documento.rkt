@@ -1,5 +1,6 @@
 #lang racket
 (provide (all-defined-out))
+(require "TDA_ParadigmaDocs.rkt")
 (require "TDA_Fecha.rkt")
 ;Representación
 ;'(idDoc Autor Fecha Contenido NombreDoc)
@@ -8,9 +9,9 @@
 ;Constructor de nuevo documento.
 ;Dominio: string X string X Fecha X lista X string
 ;Recorrido : nuevoDoc
-(define (nuevoDoc contenido autor date documentos nombreDoc)
+(define (nuevoDoc contenido autor date documentos nombreDoc pDocs)
    (if(string? contenido)
-     (append documentos (list (list (newId documentos) autor date contenido nombreDoc)) )
+     (append documentos (list (list (newId documentos) autor date ((pDocs->encryptFn pDocs)contenido) nombreDoc)) )
      null
      )
   )
@@ -57,7 +58,7 @@
      (reemplaza documentos id (list id
           (docs->selectAutor (docs->selectDoc id documentos))
           (docs->selectDate (docs->selectDoc id documentos))
-          (~a (docs->selectContent (docs->selectDoc id documentos)) contenido)
+          (~a contenido (docs->selectContent (docs->selectDoc id documentos)) )
           (docs->selectNombreDoc (docs->selectDoc id documentos))
           )
        )
@@ -70,8 +71,6 @@
      (+ (length documentos)  1)
      )
   )
-
-
 
 (define reemplaza (lambda (docs id docAct)
                     (if (null? docs)

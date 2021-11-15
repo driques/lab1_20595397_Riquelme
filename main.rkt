@@ -13,7 +13,6 @@
 ;Dominio: paradigmadocs X date X string X string
 ;Recorrido: paradigmaDocs
 
-;OJO FALTA AUN IMPLEMENTAR LA PARTE DE LA FECHA QUE NO SE ME OLVIDE!!!
 (define (register pDocs date username password)
        (if (and (string? username) (string? password))
           (if (not (existeUserDoc? (pDocs->usersList pDocs) username))
@@ -79,10 +78,10 @@
                                   (pDocs->decryptFn pDocs)
                                   (pDocs->usersList pDocs)
                                   (logOut)
-                                  (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)
+                                  (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre pDocs)
                                   (pDocs->access pDocs)
-                                  (historial (docs->idDoc (list-ref (reverse(nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)) 0));Por la naturaleza de nuevoDoc, se invierte.
-                                             (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre)
+                                  (historial (docs->idDoc (list-ref (reverse(nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre pDocs)) 0));Por la naturaleza de nuevoDoc, se invierte.
+                                             (nuevoDoc contenido (car (car (pDocs->activeUser pDocs))) date (pDocs->docs pDocs) nombre pDocs)
                                              (pDocs->history pDocs))
                                   (pDocs->usersHistory pDocs)
                                   )
@@ -144,10 +143,10 @@
                             (pDocs->decryptFn pDocs)
                             (pDocs->usersList pDocs)
                             (logOut)
-                            (actualizaDoc id content (pDocs->docs pDocs))
+                            (actualizaDoc id ((pDocs->encryptFn pDocs)content) (pDocs->docs pDocs))
                             (pDocs->access pDocs)
                             (historial id
-                                       (actualizaDoc id content (pDocs->docs pDocs))
+                                       (actualizaDoc id ((pDocs->encryptFn pDocs)content) (pDocs->docs pDocs))
                                        (pDocs->history pDocs))
                             (pDocs->usersHistory pDocs)
                             )
@@ -178,7 +177,7 @@
                             (pDocs->decryptFn pDocs)
                             (pDocs->usersList pDocs)
                             (logOut)
-                            (reemplaza (pDocs->docs pDocs) idDoc (restore idDoc idVersion (pDocs->history pDocs)));Aqui actualizar
+                            (reemplaza (pDocs->docs pDocs) idDoc (restore idDoc idVersion (pDocs->history pDocs)));Aqui actualiza
                             (pDocs->access pDocs)
                             (pDocs->history pDocs)
                             (pDocs->usersHistory pDocs)
@@ -250,6 +249,14 @@
          (listaDocTotal (cdr historial) (append listasAcum (cddr(car historial))))
          )
   )
+
+
+
+
+
+
+(define (paradigmaDocs->string pDocs)
+                    (string->registerUser (car(pDocs->usersList pDocsLogin1))) )
 ;-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -259,9 +266,7 @@
 (define pDocs (paradigmaDocs "pDocs" (fecha 20 11 2020) encryptFn encryptFn)) ;Se crea el editor de texto.
 (define pDocsRegister1 (register pDocs (fecha 12 11 2021) "pepe" "qwertyy1234")) ;Se regitra usuario
 (define pDocsRegister2 (register pDocsRegister1 (fecha 10 11 2020) "pepe3" "qwertyy1234")) ;Se regitra usuario
-(define pDocsRegister3 (register pDocsRegister2 (fecha 12 11 2020) "driques" "contrasenia321")) ;Se registra usuario
-(define pDocsRegister4 (register pDocsRegister3 (fecha 12 11 2020) "driqusses" "contrasenia321")) ;Se regitra usuario
-(define pDocsRegister5 (register pDocsRegister4 (fecha 12 11 2020) "driqasdues" "contrasenia321")) ;Se regitra usuario
+(define pDocsRegister3 (register pDocsRegister2 (fecha 10 11 2020) "driques" "contrasenia321")) ;Se registra usuario
 (define pDocsError (register pDocsRegister3 (fecha 20 11 2020) "driques" "qwertyy1234"));Hace falta que solo el username sea identico para
                                                                                         ;no poder tomarlo
 
@@ -269,7 +274,7 @@
 
 (define pDocsLogin1 ((login pDocsRegister3  "driques"  "contrasenia321" create) (fecha 30 10 2020) "doc1" "primer documento"));Se inicia sesión y se crea un doc. 
 (define pDocsLogin2 ((login pDocsLogin1  "pepe"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;Se inicia sesión y se crea un doc.
-(define pDocsLogin3 ((login pDocsLogin1  "usuarioError"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;No existe el usuario
+(define pDocsLogin3 ((login pDocsLogin2  "usuarioError"  "qwertyy1234" create) (fecha 30 10 2020) "doc2" "segundooo documento")) ;No existe el usuario
 (define pDocsLogin4 ((login pDocsLogin2  "pepe3"  "qwertyy1234" create) (fecha 30 10 2020) "doc3" "tercer documento")) ;Se inicia sesión y se crea un doc.
 
 
@@ -296,3 +301,6 @@
 (define pDocsSearch2 ((login pDocsShare3 "driques" "contrasenia321" search)"documento"));"driques" tiene permiso de escritor en el documento 2, y es propietario del documento 1, por lo que puede ver ambos.
 (define pDocsSearch3 ((login pDocsShare3 "driques" "contrasenia321" search)"noExistePalabra"));Busca una palabra que no existe, entonces, retorna una lista nula.
 
+
+
+(define pDocsString (login pDocsShare3 "driques" "contrasenia321" paradigmaDocs->string))

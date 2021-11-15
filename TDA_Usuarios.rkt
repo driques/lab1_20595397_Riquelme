@@ -107,10 +107,8 @@
        (list usuarioAgregar)
        (if (equal? 1 (length listaUsuarios))
           (append (list (car listaUsuarios)) (list usuarioAgregar))
-          (append (list (car listaUsuarios)) (agregaUsuario usuarioAgregar (cdr listaUsuarios)))
+          (append (list (car listaUsuarios)) (agregaUsuarioHist usuarioAgregar (cdr listaUsuarios)))
        )
       )
       listaUsuarios)
   )
-
-

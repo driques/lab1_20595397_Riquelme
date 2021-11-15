@@ -6,6 +6,11 @@
 ;Definición encryptFn
 (define encryptFn (lambda (s) (list->string (reverse (string->list s)))))
 
+(define myEncrypt(lambda (string)
+                   null
+                   )
+  )
+
 ;Representación paradigmaDocs
 ;( (name) (date) (encryptFn) (decryptFn) '(listaRegistrados) '(usuarioActivo) '(listaDocumentos) '(listaAccess) '(historial) '(historialUsers)) 
 
@@ -137,6 +142,16 @@
 (define (logOut)
   '()
   )
+
+
+(define (string->registerUser usersList )
+     (if  (null? usersList)
+          "-----------------------------------------------\n"
+          (string-append (~a (~a "usuario registrado: "(user->username usersList)) "\n") (string->registerUser (cdr usersList)))
+          )
+  )
+
+
 
 ;Tests
 ;(define a (paradigmaDocs "gDocs" (fecha 12 1 2020) encryptFn encryptFn))
