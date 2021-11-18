@@ -1,7 +1,9 @@
 #lang racket
 (provide (all-defined-out))
 (require "TDA_ParadigmaDocs.rkt")
+(require "TDA_Usuarios.rkt")
 (require "TDA_Fecha.rkt")
+
 ;Representación
 ;'(idDoc Autor Fecha Contenido NombreDoc)
 
@@ -84,7 +86,39 @@
  )
 
 
+
+(define (string->registerUser usersList )
+     (if  (null? usersList)
+          "-----------------------------------------------\n"
+          (string-append (~a (~a "usuario registrado: "(car (user->username usersList))) "\n") (string->registerUser (cdr usersList)))
+          )
+  )
+
+(define (string->docs docsList decryptFn)
+  (if (null? docsList)
+      "------------------------------------------------\n"
+    (string-append (~a (~a (~a(~a(~a (~a "id Doc: "(docs->idDoc (car docsList))) "\n")
+     (~a (~a "-> " (decryptFn (docs->selectContent (car docsList) ) )) "\n"))
+       (~a (~a (~a "Propietario: " (docs->selectAutor (car docsList)) )"\n")))
+        (~a (~a (~a (~a "Fecha creacion: " (getDia (docs->selectDate (car docsList))) ) (~a " de " (getMonthName (getMes (docs->selectDate (car docsList)))))) (~a " del " (getAgno (docs->selectDate (car docsList)))) ) "\n"))
+                  "------------------------------------------------\n" )
+        (string->docs (cdr docsList) decryptFn))
+    )
+  )
+
+
+
+
+(define (paradigmaDocs->string pDocs listDocs)
+                    (string->docs listDocs (pDocs->decryptFn pDocs))
+  )
+
+
+
 ;Test
 ;(define test1 (nuevoDoc "heyhey" "pepe" (fecha 10 12 2020) '() "docTest"))
 ;(define test2 (nuevoDoc "heyhey" "pepe" (fecha 10 12 2020) test1 "docTest"))
 ;(define listaTest '((1 "driques" (30 10 2020) "primer documento" "doc1") (2 "pepe" (30 10 2020) "segundooo documento" "doc2")))
+(define pDocs (paradigmaDocs "pDocs" '(20 11 2020) encryptFn encryptFn))
+
+;(display (paradigmaDocs->string pDocs testAutoF) )

@@ -1,7 +1,7 @@
 #lang racket
 (provide (all-defined-out))
 (require "TDA_Fecha.rkt")
-(require "TDA_Usuarios.rkt")
+
 
 ;Definición encryptFn
 (define encryptFn (lambda (s) (list->string (reverse (string->list s)))))
@@ -144,14 +144,6 @@
   )
 
 
-(define (string->registerUser usersList )
-     (if  (null? usersList)
-          "-----------------------------------------------\n"
-          (string-append (~a (~a "usuario registrado: "(user->username usersList)) "\n") (string->registerUser (cdr usersList)))
-          )
-  )
-
-
 
 ;Tests
 ;(define a (paradigmaDocs "gDocs" (fecha 12 1 2020) encryptFn encryptFn))
@@ -159,4 +151,3 @@
 ;(define user '("driques"))
 ;(define password '("contrasenia123"))
 ;(define testAuto (autenticacion listaUsuarios "driques" "contrasenia123"))
-;(define testAutoF (autenticacion listaUsuarios "driques" "contraseniaasd123"))

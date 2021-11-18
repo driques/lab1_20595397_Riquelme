@@ -28,7 +28,6 @@
 ;Dominio: stringXintXlistaString
 ;Recorrido: Booleano
 (define (permisoEditar? userLog idDoc accesos)
-  
 (if(null? accesos)
            #f
            (if (eq? idDoc  (car accesos))
@@ -38,12 +37,20 @@
                (permisoEditar? userLog idDoc (cdr accesos))
             )
          )
-
-
-
-   
-
   )
+
+;Selectores
+;Funcion que selecciona el id 
+(define (access->id accessList)
+  (car accessList))
+
+;Funcion que selecciona los editores 
+(define (access->editores accessList )
+     (cadr accessList)
+  )
+
+
+
 ;Funcion que recorre los editores y pregunta si es que el nombre del user está dentro de estos y si tiene permisos write.
 ;Dominio: listaString X string
 ;Recorrido: Booleano
@@ -225,6 +232,13 @@
   )
 
 
+(define (string->access accessList)
+       (if(null? accessList)
+          "--------------------------\n"
+          (string-append (~a (~a (~a ( ~a "ID documento: " (access->id accessList)) " compartido con: ") (access->editores accessList)) "\n") (string->access (cddr accessList)))
+          )
+  )
+
 
 ;Tests
 ;(define testAccess (list (newAccess "pepe1" #\r) (newAccess "pepe2" #\w) (newAccess "pepe3" #\c) (newAccess "pepe4" #\r) (newAccess "pepe5" #\r)))
@@ -238,3 +252,4 @@
 ;(define listaTestUsuarios2 '(("driques" #\r) ("pepe3" #\w)))
 
 ;(define AccesoTest (daAcceso listaTestUsuarios testAccess 1 listaTest))
+(define testAutoF '((2 (("driques" #\w) ("pepe3" #\r)) 1 (("pepe" #\c)))))

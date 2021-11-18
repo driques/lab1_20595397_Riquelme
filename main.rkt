@@ -253,10 +253,15 @@
 
 
 
-
+;Avance paradigmaDocs->string
 
 (define (paradigmaDocs->string pDocs)
-                    (string->registerUser (car(pDocs->usersList pDocsLogin1))) )
+           (~a (~a (string->registerUser (pDocs->usersList pDocsLogin1))
+                  (string->docs (pDocs->docs pDocs) (pDocs->decryptFn pDocs))) (string->access (car (pDocs->access pDocs))))
+
+        )
+               
+  ; 
 ;-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -303,4 +308,3 @@
 
 
 
-(define pDocsString (login pDocsShare3 "driques" "contrasenia321" paradigmaDocs->string))
