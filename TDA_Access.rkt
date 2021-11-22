@@ -88,12 +88,12 @@
    
 
   )
+
 ;Funcion que recorre los editores y pregunta si es que el nombre del user está dentro de estos y si tiene permisos write.
 ;Dominio: listaString X string
 ;Recorrido: Booleano
 
 (define (recorreSearch listaEditores nombreEditor)
-
   (if (null? listaEditores)
              #f
              (if (and (eq? (car(car listaEditores)) nombreEditor) (or (char=? (car(cdr (car listaEditores))) #\w) (char=? (car(cdr (car listaEditores))) #\r)))
@@ -102,6 +102,8 @@
                  )
              )
   )
+
+
 ;-------------------------------------------------------------------------------------------------------------------
 
 
@@ -238,6 +240,29 @@
           (string-append (~a (~a (~a ( ~a "ID documento: " (access->id accessList)) " compartido con: ") (access->editores accessList)) "\n") (string->access (cddr accessList)))
           )
   )
+(define (string->activeAccess accessList id)
+    (if(null? accessList)
+          "\n"
+          (if (eq? id (access->id accessList))
+              (~a (~a (~a ( ~a "ID documento: " (access->id accessList)) " compartido con: ") (access->editores accessList)) "\n") 
+              (string->access (cddr accessList))
+              )
+          
+          )
+
+
+  )
+
+
+(define (shareWithMe accessList user)
+      (if (null? accessList)
+          #t
+          #f
+       )
+  )
+
+
+
 
 
 ;Tests

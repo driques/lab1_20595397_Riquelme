@@ -3,6 +3,8 @@
 (require "TDA_ParadigmaDocs.rkt")
 (require "TDA_Usuarios.rkt")
 (require "TDA_Fecha.rkt")
+(require "TDA_Access.rkt")
+
 
 ;Representación
 ;'(idDoc Autor Fecha Contenido NombreDoc)
@@ -109,11 +111,63 @@
 
 
 
-(define (paradigmaDocs->string pDocs listDocs)
-                    (string->docs listDocs (pDocs->decryptFn pDocs))
+(define (allSameId idDoc historyList)
+          (if (null? historyList)
+              null
+              (if (eq? idDoc (historialActive->idDoc historyList))
+                  (append (list (car historyList)) (allSameId idDoc (cdr historyList)) )
+                  (allSameId idDoc (cdr historyList)))
+              )
+  )
+
+(define (idVerString allSameId decryptFn)
+  (if (null? allSameId)
+      "------------------------------------------------\n"
+      (~a
+      (~a (~a (~a "id Version: " (historialActive->idVer allSameId)) "\n")
+          (~a (~a "-> " (decryptFn (docs->selectContent (car (historialActive->docSelect allSameId))))) "\n"))
+          (idVerString (cdr allSameId) decryptFn)
+       )
+
+      )
   )
 
 
+
+
+
+(define (string->activeDocs docsList decryptFn activeUser histList accessList)
+  (if (null? docsList)
+      "------------------------------------------------\n"
+    
+   (if (eq? (docs->selectAutor (car docsList)) activeUser)
+      (string-append (~a (~a (~a (~a(~a(~a (~a "id Doc: "(docs->idDoc (car docsList))) "\n")
+     (~a (~a "-> " (decryptFn (docs->selectContent (car docsList) ) )) "\n"))
+       (~a (~a (~a "Propietario: " (docs->selectAutor (car docsList)) )"\n")))
+        (~a (~a (~a (~a "Fecha creacion: " (getDia (docs->selectDate (car docsList))) ) (~a " de " (getMonthName (getMes (docs->selectDate (car docsList))))))
+                (~a " del " (getAgno (docs->selectDate (car docsList)))) ) "\n"))
+                 (idVerString (allSameId (docs->idDoc (car docsList)) histList) decryptFn))
+                 (string->activeAccess accessList (docs->idDoc (car docsList)) )
+                 )
+        (string->activeDocs (cdr docsList) decryptFn activeUser histList accessList))
+      (string->activeDocs (cdr docsList) decryptFn activeUser histList accessList))
+    )
+  )
+;(idVerString (allSameId (docs->idDoc (car docsList))) histList) decryptFn)
+
+
+;(idVerString (allSameId (docs->idDoc (car docsList)) decryptFn) histList) 
+;Selector adicionales
+;(Se recrean los selectores de historial, ya que caería en un loop en caso de que se requiera el TDA historial)
+(define (historialActive->idDoc historial)
+  (car(car historial))
+  )
+(define (historialActive->idVer historial)
+  (car(cdr(car historial)))
+  )
+(define (historialActive->docSelect historial)
+  (cddr(car historial))
+  )
 
 ;Test
 ;(define test1 (nuevoDoc "heyhey" "pepe" (fecha 10 12 2020) '() "docTest"))

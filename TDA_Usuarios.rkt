@@ -112,3 +112,26 @@
       )
       listaUsuarios)
   )
+
+
+;Funciones extras
+
+(define (string->activeUser user fechas)
+  (if (null? fechas)
+      "ERROR CON ACTIVE USER\n"
+      (if (eq? (user->username (car user)) (car(car fechas)))
+           (~a ( ~a "Usuario activo: " (user->username (car user))) (~a (~a "\nFecha creación usuario : " (cdr(car fechas))) "\n"))
+          (string->activeUser user (cdr fechas))))
+  
+  )
+
+
+
+
+(define listTest '(("pepe" (12 11 2021)) ("pepe3" (10 11 2020)) ("driques" (10 11 2020))))
+
+
+
+
+
+

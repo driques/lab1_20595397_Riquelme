@@ -106,11 +106,13 @@
 
 
 
+;(allSameId 1 testHist1)
+
 ;Tests
 ;DEL MOMENTO, FUNCIONALES, FALTA IMPLEMENTARLOS DENTRO DE MAIN.
 (define testDoc1 '(1 "driques" (30 10 2020) "test 2 del doc1" "doc1"))
 (define testDoc2 '(1 "driques" (30 10 2020) "test 3 del doc1" "doc1"))
-(define testHist1 (list '(2 1 '(2 "driques" (30 10 2020) "otroTest" "doc2")) '(1 1 '(1 "driques" (30 10 2020) "test 1" "doc1"))) )
+(define testHist1 '((1 2 (3 "driques" (30 10 2020) "otnemucod omitlu" "docFinal")) (2 1 (2 "pepe" (30 10 2020) "otnemucod ooodnuges" "doc2")) (1 1 (1 "driques" (30 10 2020) "otnemucod remirp" "doc1"))) )
 (define testHist2 '())
 
 ;(define test1 (historial testDoc1 testHist2))

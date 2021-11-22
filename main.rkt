@@ -250,14 +250,19 @@
          )
   )
 
-
+  
 
 
 ;Avance paradigmaDocs->string
-
+;No reviso si es que alguna lista esta vacia, por lo que tira error, en especial en access.
 (define (paradigmaDocs->string pDocs)
-           (~a (~a (string->registerUser (pDocs->usersList pDocsLogin1))
-                  (string->docs (pDocs->docs pDocs) (pDocs->decryptFn pDocs))) (string->access (car (pDocs->access pDocs))))
+        (if (not (null? (pDocs->activeUser pDocs)))
+            (~a (~a (string->activeUser (pDocs->activeUser pDocs) (pDocs->usersHistory pDocs))
+            (string->activeDocs (pDocs->docs pDocs) (pDocs->decryptFn pDocs) (user->username (car (pDocs->activeUser pDocs))) (pDocs->history pDocs) (car (pDocs->access pDocs)))
+             ) "\naqui va los doc compartidos\n")
+           ;De aqui sin login 
+            (~a (~a (string->registerUser (pDocs->usersList pDocs))
+                  (string->docs (pDocs->docs pDocs) (pDocs->decryptFn pDocs))) (string->access (car (pDocs->access pDocs)))))
 
         )
                
@@ -285,7 +290,7 @@
 
 (define pDocsShare ((login pDocsLogin2  "pepe"  "qwertyy1234" share) 2 (newAccess "driques" #\w) (newAccess "pepe3" #\r))) ;Se dan accesos nuevos
 (define pDocsShare2 ((login pDocsShare  "juana"  "qwertyy1234" share) 2 (newAccess "driques" #\w) ));Juana no existe en los usuarios registrados, retorna pDocs sin cambios
-(define pDocsShare3 ((login pDocsShare  "driques"  "contrasenia321" share) 1 (newAccess "pepe" #\c) )) ;Comparte otro usuario otro doc
+(define pDocsShare3 ((login pDocsShare  "driques"  "contrasenia321" share) 1 (newAccess "pepe3" #\w) )) ;Comparte otro usuario otro doc
 (define pDocsShare4 ((login pDocsShare  "driques"  "contrasenia321" share) 2 (newAccess "pepe3" #\c) )) ;No permite compartir documentos que no sean de la autoria del usuario.
 
 
@@ -301,10 +306,11 @@
 (define pDocsRevoke2 (login pDocsShare3 "pepe" "contrasenia321" revokeAllAccesses));Usuario invalido, solo devuelve paradigmaDocs.
 (define pDocsRevoke3 (login pDocsShare3 "pepe" "qwertyy1234" revokeAllAccesses));Introducción correcta, elimina los permisos de los documentos de "pepe"
 
-
+;--------------------------------------
 (define pDocsSearch ((login pDocsShare3 "pepe" "qwertyy1234" search)"documento"));"pepe" solo tiene permiso para ver su propio doc, ya que el permiso que tiene es de comentario, no de escritor o lector.
 (define pDocsSearch2 ((login pDocsShare3 "driques" "contrasenia321" search)"documento"));"driques" tiene permiso de escritor en el documento 2, y es propietario del documento 1, por lo que puede ver ambos.
 (define pDocsSearch3 ((login pDocsShare3 "driques" "contrasenia321" search)"noExistePalabra"));Busca una palabra que no existe, entonces, retorna una lista nula.
 
 
-
+(define pDocsLoginFinal ((login pDocsAdd2 "driques"  "contrasenia321" create) (fecha 30 10 2020) "docFinal" "ultimo documento"));
+(define pDocsStrActive (login pDocsLoginFinal "driques" "contrasenia321" paradigmaDocs->string))
