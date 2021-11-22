@@ -262,6 +262,31 @@
   )
 
 
+;Funcion que recorre los editores y pregunta si es que el nombre del user está dentro de estos
+;(se diferencia con la otra funcion ya que esta solo pide que exista, y no que tenga un modo de edicion especifico).
+;Dominio: listaString X string
+;Recorrido: Booleano
+
+(define (recorreEditoresUser listaEditores nombreEditor)
+  (if (null? listaEditores)
+             #f
+             (if (eq? (car (car listaEditores)) nombreEditor) 
+                 #t
+                 (recorreEditores (cdr listaEditores) nombreEditor)
+                 )
+             )
+  )
+;Entrega una lista de los id donde se hayan compartido los documentos con el usuario.
+(define (entregaIDDocsCom user listaAccess)
+        (if (null? listaAccess)
+            null
+            (if (recorreEditoresUser (cadr listaAccess) user)
+                (append (list (car listaAccess)) (entregaIDDocsCom user (cddr listaAccess)))
+                (entregaIDDocsCom user (cddr listaAccess))
+                )
+            )
+  )
+
 
 
 
@@ -277,4 +302,7 @@
 ;(define listaTestUsuarios2 '(("driques" #\r) ("pepe3" #\w)))
 
 ;(define AccesoTest (daAcceso listaTestUsuarios testAccess 1 listaTest))
-(define testAutoF '((2 (("driques" #\w) ("pepe3" #\r)) 1 (("pepe" #\c)))))
+(define testAutoF '((2 (("driques" #\w) ("pepe3" #\r)) 1 (("pepe" #\c)) 5 (("driques" #\w) ("pepe3" #\r)) 7 (("driques" #\w) ("pepe3" #\r)) 9 (("driques" #\w) ("pepe3" #\r)))))
+
+
+(define testEntregaDocs (entregaIDDocsCom "driques" (car testAutoF)))

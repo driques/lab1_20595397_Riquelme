@@ -251,21 +251,27 @@
   )
 
   
-
+;
 
 ;Avance paradigmaDocs->string
 ;No reviso si es que alguna lista esta vacia, por lo que tira error, en especial en access.
 (define (paradigmaDocs->string pDocs)
         (if (not (null? (pDocs->activeUser pDocs)))
             (~a (~a (string->activeUser (pDocs->activeUser pDocs) (pDocs->usersHistory pDocs))
-            (string->activeDocs (pDocs->docs pDocs) (pDocs->decryptFn pDocs) (user->username (car (pDocs->activeUser pDocs))) (pDocs->history pDocs) (car (pDocs->access pDocs)))
-             ) "\naqui va los doc compartidos\n")
+            (string->activeDocs (pDocs->docs pDocs) (pDocs->decryptFn pDocs) (user->username (car (pDocs->activeUser pDocs))) (pDocs->history pDocs) (if (null? (pDocs->access pDocs))
+                                                                                   null
+                                                                                   (car (pDocs->access pDocs))   ) )
+             ) (if (null? (pDocs->access pDocs))
+                      "NO HAY DOCUMENTOS COMPARTIDOS."
+                     (entregaDocs (entregaIDDocsCom (user->username (car (pDocs->activeUser pDocs))) (car (pDocs->access pDocs))) (pDocs->docs pDocs))))
            ;De aqui sin login 
             (~a (~a (string->registerUser (pDocs->usersList pDocs))
-                  (string->docs (pDocs->docs pDocs) (pDocs->decryptFn pDocs))) (string->access (car (pDocs->access pDocs)))))
+                  (string->docs (pDocs->docs pDocs) (pDocs->decryptFn pDocs))) (if (null? (pDocs->access pDocs))
+                                                                                   "SIN COMPARTIR DOCS"
+                                                                                   (string->access (car (pDocs->access pDocs))))))
 
         )
-               
+               ;
   ; 
 ;-----------------------------------------------------------------------------------------------------------------------------
 
@@ -313,4 +319,5 @@
 
 
 (define pDocsLoginFinal ((login pDocsAdd2 "driques"  "contrasenia321" create) (fecha 30 10 2020) "docFinal" "ultimo documento"));
-(define pDocsStrActive (login pDocsLoginFinal "driques" "contrasenia321" paradigmaDocs->string))
+(define pDocsShare5 ((login pDocsLoginFinal  "driques"  "contrasenia321" share) 3 (newAccess "pepe3" #\c) ))
+(define pDocsStrActive (login pDocsShare5 "driques" "contrasenia321" paradigmaDocs->string))

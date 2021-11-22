@@ -134,7 +134,7 @@
 
 
 
-
+;
 
 (define (string->activeDocs docsList decryptFn activeUser histList accessList)
   (if (null? docsList)
@@ -147,7 +147,10 @@
         (~a (~a (~a (~a "Fecha creacion: " (getDia (docs->selectDate (car docsList))) ) (~a " de " (getMonthName (getMes (docs->selectDate (car docsList))))))
                 (~a " del " (getAgno (docs->selectDate (car docsList)))) ) "\n"))
                  (idVerString (allSameId (docs->idDoc (car docsList)) histList) decryptFn))
-                 (string->activeAccess accessList (docs->idDoc (car docsList)) )
+                 (if (null? accessList)
+                     "Documento no compartido.\n"
+                     (string->activeAccess accessList (docs->idDoc (car docsList)))
+                     )
                  )
         (string->activeDocs (cdr docsList) decryptFn activeUser histList accessList))
       (string->activeDocs (cdr docsList) decryptFn activeUser histList accessList))
@@ -169,10 +172,34 @@
   (cddr(car historial))
   )
 
+
+
+;EntregaDocs
+
+(define (entregaDocs listaIDs docs)
+  (if (null? listaIDs)
+      null
+      (append (list (recorreDocs (car listaIDs) docs)) (entregaDocs (cdr listaIDs) docs))
+  )
+ )
+
+
+(define (recorreDocs id docs)
+  (if (null? docs)
+      null
+      (if (eq? id (docs->idDoc (car docs)) )
+          (docs->selectContent (car docs))
+          (recorreDocs id (cdr docs))
+          )
+      )
+  )
+
+
+
 ;Test
 ;(define test1 (nuevoDoc "heyhey" "pepe" (fecha 10 12 2020) '() "docTest"))
 ;(define test2 (nuevoDoc "heyhey" "pepe" (fecha 10 12 2020) test1 "docTest"))
-;(define listaTest '((1 "driques" (30 10 2020) "primer documento" "doc1") (2 "pepe" (30 10 2020) "segundooo documento" "doc2")))
+(define listaTest '((1 "driques" (30 10 2020) "primer documento" "doc1") (2 "pepe" (30 10 2020) "segundooo documento" "doc2")))
 (define pDocs (paradigmaDocs "pDocs" '(20 11 2020) encryptFn encryptFn))
 
 ;(display (paradigmaDocs->string pDocs testAutoF) )
