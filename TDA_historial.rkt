@@ -2,17 +2,10 @@
 (provide (all-defined-out))
 (require "TDA_Documento.rkt")
 (require "TDA_ParadigmaDocs.rkt")
-;Representación
-
-
-;Me falta reconstruir el constructor anterior, para llevarlo a la siguiente forma,
-;asi pregunto por el idVer máx (que se encontrará más a la izquierda), para luego, en caso
-;de hacer un cambio, agregar un 1 al idVer del idDoc, y asi ir incrementando el historial para
-;un documento en especifico.
-
-;Constructor '( (idDoc idVer (doc)) (idDoc2 idVer2 (doc)) )
+;Representación '((idDoc idVer (doc) (...))
 ;Ejemplo '((list idDoc (selectIdVer idDoc historialList) documento) (2 1 '(2 "driques" (30 10 2020) "otroTest" "doc2")) (1 1 '(1 "driques" (30 10 2020) "test 1" "doc1")))
-
+;Dominio: int X documento X list
+;Recorrido : historial
 
 (define (historial id documento historialList)
       (if (null? historialList)
@@ -32,6 +25,8 @@
 
 ;Pertenencia
 ;Pregunta si el id del doc está ya anteriormente en el historial.
+;dom: int X list
+;rec: boolean
 (define (isInHist? idDoc historialList)
   (if (null? historialList)
       #f
@@ -42,7 +37,9 @@
       )
   )
 
-
+;Funcion que pregunta si es de autoria el doc.
+;dom: int X str X list
+;rec: boolean
 
 (define (autoriaHistorialDoc? idDoc activeUser historial)
           (if (null? historial)
@@ -54,7 +51,9 @@
       )
   )
 
-
+;Funcion que pregunta si el id ingresado existe.
+;;dom: int X int X list
+;rec: boolean
 (define (existenId? idDoc idVer historial)
     (if (null? historial)
         #f
@@ -68,20 +67,38 @@
 
 
 ;Selector
+;descripción: Función que retorna el id del doc.
+;dom: historial
+;rec: entero
 (define (historial->idDoc historial)
   (car(car historial))
   )
+;Selector
+;descripción: Función que retorna el id de la version del doc.
+;dom: historial
+;rec: entero
 (define (historial->idVer historial)
   (car(cdr(car historial)))
   )
+;Selector
+;descripción: Función que retorna el doc seleccionado.
+;dom: historial
+;rec: documento
 (define (historial->docSelect historial)
   (cddr(car historial))
   )
+;Selector
+;descripción: Función que retorna el propietario.
+;dom: historial
+;rec: str
 (define (historial->owner historial)
       (cadr(car (historial->docSelect historial)))
   )
 ;Modificador
 
+;descripción: Función que restablece a una version especifica
+;dom: int X int X historial
+;rec: list
 (define (restore idDoc idVer historial)
          (if (null? historial)
              "error"
@@ -96,6 +113,9 @@
 
 ;Funciones adicionales
 ;Función que toma el id actual y suma 1.
+
+;dom: int X list
+;rec: entero
 (define (selectIdVer idDoc historialList)
   (if (eq? idDoc (historial->idDoc historialList))
       (+ (historial->idVer historialList) 1)
@@ -105,15 +125,12 @@
 
 
 
-
-;(allSameId 1 testHist1)
-
 ;Tests
 ;DEL MOMENTO, FUNCIONALES, FALTA IMPLEMENTARLOS DENTRO DE MAIN.
-(define testDoc1 '(1 "driques" (30 10 2020) "test 2 del doc1" "doc1"))
-(define testDoc2 '(1 "driques" (30 10 2020) "test 3 del doc1" "doc1"))
-(define testHist1 '((1 2 (3 "driques" (30 10 2020) "otnemucod omitlu" "docFinal")) (2 1 (2 "pepe" (30 10 2020) "otnemucod ooodnuges" "doc2")) (1 1 (1 "driques" (30 10 2020) "otnemucod remirp" "doc1"))) )
-(define testHist2 '())
+;(define testDoc1 '(1 "driques" (30 10 2020) "test 2 del doc1" "doc1"))
+;(define testDoc2 '(1 "driques" (30 10 2020) "test 3 del doc1" "doc1"))
+;(define testHist1 '((1 2 (3 "driques" (30 10 2020) "otnemucod omitlu" "docFinal")) (2 1 (2 "pepe" (30 10 2020) "otnemucod ooodnuges" "doc2")) (1 1 (1 "driques" (30 10 2020) "otnemucod remirp" "doc1"))) )
+;(define testHist2 '())
 
 ;(define test1 (historial testDoc1 testHist2))
 ;(define test2 (historial testDoc2 test1))

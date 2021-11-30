@@ -37,27 +37,48 @@
      )
 
 ;Selector
+;Función selectora del id del documento.
+;Dominio:lista doc.
+;Recorrido: int.
 (define (docs->idDoc doc)
   (list-ref doc 0)
   )
+;Función selectora del autor del documento.
+;Dominio:lista doc.
+;Recorrido: str.
 (define (docs->selectAutor doc)
    (list-ref doc 1)
   )
+;Función selectora de la fecha del documento.
+;Dominio:lista doc.
+;Recorrido: fecha.
 (define (docs->selectDate doc)
    (list-ref doc 2)
   )
+;Función selectora del content del documento.
+;Dominio:lista doc.
+;Recorrido: str.
 (define (docs->selectContent doc)
    (list-ref doc 3)
   )
+;Función selectora del nombre del documento.
+;Dominio:lista doc.
+;Recorrido: str.
 (define (docs->selectNombreDoc doc)
    (list-ref doc 4)
   )
 ;Selector especial
+;Sirve para seleccionar un documento de lista de documentos.
+;Dominio:lista doc.
+;Recorrido: lista.
 (define (docs->selectDoc id documentos)
    (list-ref documentos (- id 1))
   )
 
 ;Modificador
+;la siguiente función actualiza el doc a partir de los cambios ejercidos.
+;Dom: intXstrXlist
+;Rec: list
 (define (actualizaDoc id contenido documentos)
      (reemplaza documentos id (list id
           (docs->selectAutor (docs->selectDoc id documentos))
@@ -67,8 +88,12 @@
           )
        )
   )
-;Funciones adicionales
 
+
+;Funciones adicionales
+;Funcion que crea un nuevo id a partir de los dados.
+;Dom: list
+;Rec: int
 (define (newId documentos)
   (if(null? documentos)
      1
@@ -76,6 +101,9 @@
      )
   )
 
+;Funcion que reemplaza un doc dentro de la lista de docs.
+;Dom: listXintXlist
+;Rec: list
 (define reemplaza (lambda (docs id docAct)
                     (if (null? docs)
                         '()
@@ -87,7 +115,9 @@
                     )
  )
 
-
+;string->registerUser nos permite obtener un str comprensible de los users registrados.
+;Dom: list
+;Rec: str
 
 (define (string->registerUser usersList )
      (if  (null? usersList)
@@ -96,6 +126,9 @@
           )
   )
 
+;string->docs nos permite obtener un str comprensible de los docs.
+;Dom: listxFunction
+;Rec: str
 (define (string->docs docsList decryptFn)
   (if (null? docsList)
       "------------------------------------------------\n"
@@ -109,7 +142,9 @@
   )
 
 
-
+;allSameId es una funcion auxiliar de idVerString, permite obtener una lista con los id iguales.
+;Dom: intXlist
+;Rec: list
 
 (define (allSameId idDoc historyList)
           (if (null? historyList)
@@ -119,7 +154,9 @@
                   (allSameId idDoc (cdr historyList)))
               )
   )
-
+;idVerString permite obtener un str comprensible de los id versions.
+;Dom: listXFunction
+;Rec: str
 (define (idVerString allSameId decryptFn)
   (if (null? allSameId)
       "------------------------------------------------\n"
@@ -134,7 +171,9 @@
 
 
 
-;
+;string->activeDocs nos permite obtener un str comprensible de los docs con un user activo.
+;Dom: listXFunctionXstrXlistXlist
+;Rec: str
 
 (define (string->activeDocs docsList decryptFn activeUser histList accessList)
   (if (null? docsList)
@@ -156,34 +195,45 @@
       (string->activeDocs (cdr docsList) decryptFn activeUser histList accessList))
     )
   )
-;(idVerString (allSameId (docs->idDoc (car docsList))) histList) decryptFn)
-
-
-;(idVerString (allSameId (docs->idDoc (car docsList)) decryptFn) histList) 
+ 
 ;Selector adicionales
+
 ;(Se recrean los selectores de historial, ya que caería en un loop en caso de que se requiera el TDA historial)
+
+;Función selectora del id doc del historial.
+;Dominio:lista.
+;Recorrido: str.
 (define (historialActive->idDoc historial)
   (car(car historial))
   )
+;Función selectora del id ver del historial.
+;Dominio:lista.
+;Recorrido: str.
 (define (historialActive->idVer historial)
   (car(cdr(car historial)))
   )
+;Función selectora del doc del historial.
+;Dominio:lista.
+;Recorrido: str.
 (define (historialActive->docSelect historial)
   (cddr(car historial))
   )
 
 
 
-;EntregaDocs
-
-(define (entregaDocs listaIDs docs)
+;Funcion que nos permite saber el numero de documento y el modo en el que se encuentra
+;Dom: listXlistxFunction
+;Rec: Str
+(define (entregaDocs listaIDs docs decryptFn)
   (if (null? listaIDs)
-      null
-      (append (list (recorreDocs (car listaIDs) docs)) (entregaDocs (cdr listaIDs) docs))
+      "\n"
+      (~a (~a (~a (~a (~a "doc No.: " (car listaIDs)) (~a " en modo: " (cadr listaIDs)))" \n") (~a (decryptFn (recorreDocs (car listaIDs) docs))"\n") ) (entregaDocs (cddr listaIDs) docs decryptFn))
   )
  )
 
-
+;Recorre los docs con igual id
+;Dom: intXlist
+;rec: str
 (define (recorreDocs id docs)
   (if (null? docs)
       null
@@ -199,7 +249,7 @@
 ;Test
 ;(define test1 (nuevoDoc "heyhey" "pepe" (fecha 10 12 2020) '() "docTest"))
 ;(define test2 (nuevoDoc "heyhey" "pepe" (fecha 10 12 2020) test1 "docTest"))
-(define listaTest '((1 "driques" (30 10 2020) "primer documento" "doc1") (2 "pepe" (30 10 2020) "segundooo documento" "doc2")))
-(define pDocs (paradigmaDocs "pDocs" '(20 11 2020) encryptFn encryptFn))
+;(define listaTest '((1 "driques" (30 10 2020) "primer documento" "doc1") (2 "pepe" (30 10 2020) "segundooo documento" "doc2")))
+;(define pDocs (paradigmaDocs "pDocs" '(20 11 2020) encryptFn encryptFn))
 
 ;(display (paradigmaDocs->string pDocs testAutoF) )

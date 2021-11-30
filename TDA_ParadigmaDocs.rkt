@@ -12,7 +12,7 @@
   )
 
 ;Representación paradigmaDocs
-;( (name) (date) (encryptFn) (decryptFn) '(listaRegistrados) '(usuarioActivo) '(listaDocumentos) '(listaAccess) '(historial) '(historialUsers)) 
+;'( (name) (date) (encryptFn) (decryptFn) '(listaRegistrados) '(usuarioActivo) '(listaDocumentos) '(listaAccess) '(historial) '(historialUsers)) 
 
 ;Constructor paradigmaDocs, crea la base de todo.
 ;Dominio: string X string X fecha X encrypt X decrypt

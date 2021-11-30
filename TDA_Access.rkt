@@ -40,11 +40,15 @@
   )
 
 ;Selectores
-;Funcion que selecciona el id 
+;Funcion que selecciona el id
+;Dom: list
+;Rec: list
 (define (access->id accessList)
   (car accessList))
 
-;Funcion que selecciona los editores 
+;Funcion que selecciona los editores
+;Dom: list
+;Rec: list
 (define (access->editores accessList )
      (cadr accessList)
   )
@@ -106,9 +110,6 @@
 
 ;-------------------------------------------------------------------------------------------------------------------
 
-
-
-
 ;Selectores
 ;Función que nos permite obtener el usuario de access
 ;Dominio: access
@@ -167,7 +168,7 @@
             #t
        )
 )
-
+;estaRegistradoListas? nos permite preguntar por cada user la lista de registrados correspondientes.
 ;Dominio: listaString X listaString X Bool
 ;Recorrido: Bool
 (define (estaRegistradoListas? listaUsers listaRegistrados boolSi)
@@ -186,6 +187,8 @@
 
 ;-----------------------------------------------------------------------------
 ;nameEq? es una función de pertenencia que pregunta si un user coincide con la listaDocs.
+;Dom: strXlist
+;Rec: bool
 (define (nameEq? user)
             (lambda (listaDocs)
               (if (eq? (cadr listaDocs) user)
@@ -195,6 +198,8 @@
   )
 
 ;FilraId nos permite filtrar todos los ids pertenecientes a un user.
+;Dom: listXstr
+;Rec: list
 (define (filtraId listaDocs user)
        (map car (filter (nameEq? user) listaDocs))
        
@@ -202,6 +207,8 @@
 ;------------------------------------------------------------------------------
 ;UsuarioRemover nos permite remover un usuario de la lista de accesos dependiendo
 ;del id asignado
+;Dom: intXlist
+;Rec: list
 (define (usuariosRemover id listaAccess)
          (if (null? listaAccess)
              '()
@@ -213,6 +220,8 @@
          )
 
 ;FiltraIdDado nos permite remover los id.
+;Dom: intXlist
+;Rec: list
 (define (filtraIdDado id listaAccess)
            (remove (usuariosRemover id listaAccess) listaAccess)
          
@@ -220,12 +229,16 @@
   )
 ;eliminaId nos permite eliminar completamente tanto el nombre como el id de la lista
 ;de accesos.
+;Dom: intXlist
+;Rec: list
 (define (eliminaId id listaAccess)
    (remq id (filtraIdDado id  listaAccess) )
   ) 
 ;------------------------------------------------------------------------------
 ;revokeAllAccessesNoEncp es la función no encapsulada de revokeAllAccesses, nos permite
 ;recursivamente eliminar uno a uno los usuarios de un doc especifico.
+;Dom: listXlist
+;Rec: list
 (define (revokeAllAccessesNoEncp listaAccess listaId)
      (if (null? listaId)
          listaAccess
@@ -233,13 +246,18 @@
       )
   )
 
-
+;string->access nos permite transformar el accessList a un str comprensible.
+;Dom: list
+;Rec: str
 (define (string->access accessList)
        (if(null? accessList)
           "--------------------------\n"
           (string-append (~a (~a (~a ( ~a "ID documento: " (access->id accessList)) " compartido con: ") (access->editores accessList)) "\n") (string->access (cddr accessList)))
           )
   )
+;string->activeAccess nos permite transformar los documentos con un user activo a un str comprensible.
+;Dom: list
+;Rec: str
 (define (string->activeAccess accessList id)
     (if(null? accessList)
           "\n"
@@ -253,6 +271,9 @@
 
   )
 
+;Función que pregunta si un documento se compartió con un user.
+;Dom: listXstr
+;Rec: Bool
 
 (define (shareWithMe accessList user)
       (if (null? accessList)
@@ -271,17 +292,19 @@
   (if (null? listaEditores)
              #f
              (if (eq? (car (car listaEditores)) nombreEditor) 
-                 #t
+                 (append '(#t) (cadr (car listaEditores)))
                  (recorreEditores (cdr listaEditores) nombreEditor)
                  )
              )
   )
 ;Entrega una lista de los id donde se hayan compartido los documentos con el usuario.
+;Dom: strXlist
+;Rec: list
 (define (entregaIDDocsCom user listaAccess)
         (if (null? listaAccess)
             null
             (if (recorreEditoresUser (cadr listaAccess) user)
-                (append (list (car listaAccess)) (entregaIDDocsCom user (cddr listaAccess)))
+                (append (append (list (car listaAccess)) (list (cdr (recorreEditoresUser (cadr listaAccess) user))))  (entregaIDDocsCom user (cddr listaAccess)))
                 (entregaIDDocsCom user (cddr listaAccess))
                 )
             )
@@ -302,7 +325,7 @@
 ;(define listaTestUsuarios2 '(("driques" #\r) ("pepe3" #\w)))
 
 ;(define AccesoTest (daAcceso listaTestUsuarios testAccess 1 listaTest))
-(define testAutoF '((2 (("driques" #\w) ("pepe3" #\r)) 1 (("pepe" #\c)) 5 (("driques" #\w) ("pepe3" #\r)) 7 (("driques" #\w) ("pepe3" #\r)) 9 (("driques" #\w) ("pepe3" #\r)))))
+;(define testAutoF '((2 (("driques" #\c) ("pepe3" #\r)) 1 (("pepe" #\c)) 5 (("driques" #\w) ("pepe3" #\r)) 7 (("driques" #\w) ("pepe3" #\r)) 9 (("driques" #\w) ("pepe3" #\r)))))
 
 
-(define testEntregaDocs (entregaIDDocsCom "driques" (car testAutoF)))
+;(define testEntregaDocs (entregaIDDocsCom "driques" (car testAutoF)))

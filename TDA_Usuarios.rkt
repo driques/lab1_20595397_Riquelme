@@ -115,7 +115,9 @@
 
 
 ;Funciones extras
-
+;string->activeUser nos permite obtener un str leible por el user.
+;Dom: str X fecha
+;Rec: str
 (define (string->activeUser user fechas)
   (if (null? fechas)
       "ERROR CON ACTIVE USER\n"
@@ -128,7 +130,7 @@
 
 
 
-(define listTest '(("pepe" (12 11 2021)) ("pepe3" (10 11 2020)) ("driques" (10 11 2020))))
+;(define listTest '(("pepe" (12 11 2021)) ("pepe3" (10 11 2020)) ("driques" (10 11 2020))))
 
 
 
