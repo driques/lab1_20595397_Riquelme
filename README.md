@@ -9,7 +9,7 @@ Utilizar git para poder copiar el repositorio, o de plano descargarlo.
 
 ### Pre-requisitos 📋
 
-_Instalar previamente el IDE Dr racket_
+_Instalar previamente el IDE Dr racket V8.X_
 
 ## Ejecutando las pruebas ⚙️
 
