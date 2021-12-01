@@ -13,7 +13,7 @@ _Instalar previamente el IDE Dr racket V8.X_
 
 ## Ejecutando las pruebas ⚙️
 
-_Para comenzar con las prubeas, y observar claramente la traza, se recomienda tener abiertos todos los archivos dentro del IDE (main y TDAs)_
+_Para comenzar con las pruebas, y observar claramente la traza, se recomienda tener abiertos todos los archivos dentro del IDE (main y TDAs)_
 Luego de ello, dentro del archivo main, se encontrarán diversos ejemplos, partir en orden descendente para seguir la traza de funciones requeridas.
 Ej: 
 ```
