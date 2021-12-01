@@ -22,8 +22,6 @@ Ej:
 
 ## Construido con 🛠️
 
-_Menciona las herramientas que utilizaste para crear tu proyecto_
-
 * [Dr Racket 8.2](https://racket-lang.org/) - IDE.
 * [GitHub](https://github.com/) - Controlador de versiones.
 
