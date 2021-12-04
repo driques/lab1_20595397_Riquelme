@@ -1,6 +1,10 @@
 #lang racket
 (provide (all-defined-out))
 ;Implementación del TDA fecha
+;Cabe destacar que este TDA no es de autoria de driques y fue utilizado
+;como parte del material disponible en uVirtual.
+
+
 
 ;representacion
 ;(entero X entero X entero)
